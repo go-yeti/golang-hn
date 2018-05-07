@@ -17,14 +17,14 @@ $ git clone https://github.com/jamesmallon/golang-hn.git golang-hn
 $ dep ensure
 ```
 
-#### Running Tests:
-```sh 
-$ ginkgo -v -r 
-```
-
 #### Build:
 ```sh
 $ go build -v -o main
+```
+
+#### Running Tests:
+```sh 
+$ ginkgo -v -r 
 ```
 
 #### Running:
