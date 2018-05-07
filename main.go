@@ -22,12 +22,12 @@ func main() {
 	if len(csvFilePath) > 0 {
 		SaveTopStories2CSV(hnEnv, qttStories, csvFilePath)
 	} else {
-		Get20TopStories(hnEnv, qttStories)
+		GetTopStories(hnEnv, qttStories)
 	}
 }
 
 // Using dependency injection to avoid rewriting new code in case of API version change
-func Get20TopStories(hnEnv configs.EnvInterface, qtt int) {
+func GetTopStories(hnEnv configs.EnvInterface, qtt int) {
 	stories, err := controller.StoryController(hnEnv).GetTopStories(qtt)
 	if err != nil {
 		panic(err)
