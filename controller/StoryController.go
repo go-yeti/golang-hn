@@ -3,11 +3,11 @@ package controller
 import (
 	"encoding/csv"
 	"fmt"
-	"os"
 	"golang-hn/configs"
 	"golang-hn/dao"
 	"golang-hn/model"
 	"golang-hn/utils"
+	"os"
 	//	"reflect"
 	"time"
 )
@@ -44,7 +44,9 @@ func (sc *storyController) GetTopStories(qtt int) ([]model.Story, error) {
 	return stories, err
 }
 
-// save topstories to a csv file
+// save topstories to a csv file. The app is waiting for the path only, the name
+// of the file, for security reasons, is automatically generated, based on timestamp
+// and the number of stories, avoiding conflicts and file overwriting
 func (sc *storyController) TopStories2CSV(qtt int, path string) (string, error) {
 	currTime := time.Now()
 
