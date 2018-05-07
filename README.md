@@ -34,5 +34,5 @@ $ ./main
 
 #### Running to save in a CSV files:
 ```sh 
-$ ./main -csv="./csv" 
+$ ./main -csv=./csv/ 
 ```
