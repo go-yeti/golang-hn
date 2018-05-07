@@ -1,16 +1,38 @@
-# golang hacker news api
-A little Golang/HackerNews
 
-Building the project
-> git clone https://github.com/jamesmallon/golang-hn.git golang-hn
+# Hacker News - Golang App
+A little **Golang HackerNews App**. I've used [golang/dep] package to **Dependency Management** and [GINKGO] for **Unitary Tests**.
 
-> dep ensure
+**SOLID**, **KISS** and **DRY** principles was applied as well as some useful and relevant (to this application) **Design Patterns**, such as **DAO**, **Dependency Injection** and more.
 
-> ginkgo -v -r 
+[golang/dep]: <https://github.com/golang/dep>
+[GINKGO]: <https://onsi.github.io/ginkgo/>
 
-Runnning
-> go build -v -o main
+#### Get the project:
+```sh
+$ git clone https://github.com/jamesmallon/golang-hn.git golang-hn
+```
 
-> ./main 
+#### Updating the dependencies:
+```sh 
+$ dep ensure
+```
 
-> ./main -csv="./csv"
+#### Build:
+```sh
+$ go build -v -o main
+```
+
+#### Running Tests:
+```sh 
+$ ginkgo -v -r 
+```
+
+#### Running:
+```sh
+$ ./main 
+```
+
+#### Running to save in a CSV files:
+```sh 
+$ ./main -csv="./csv" 
+```
