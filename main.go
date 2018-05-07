@@ -7,11 +7,13 @@ import (
 	"golang-hn/controller"
 )
 
+// It is possible to specify by flag the quantity of top stories you retrieve. By default it is 20.
+// Also, using -cvs flag it is possible to specify the file path to save the result to a .csv file
 func main() {
 	var csvFilePath string
 	flag.StringVar(&csvFilePath, "csv", "", "Please specify a valid path for the file (/home/username/).")
 	var qttStories int
-	flag.IntVar(&qttStories, "qtt", 20, "Please specify a valid path for the file (/home/username/).")
+	flag.IntVar(&qttStories, "tsqtt", 20, "Please provide the quantity of topstories you want to get.")
 	flag.Parse()
 
 	// get the environment variables
@@ -34,6 +36,7 @@ func Get20TopStories(hnEnv configs.EnvInterface, qtt int) {
 	}
 }
 
+// Save topstories to a specified .csv file
 func SaveTopStories2CSV(hnEnv configs.EnvInterface, qtt int, filePath string) {
 	msg, err := controller.StoryController(hnEnv).TopStories2CSV(qtt, filePath)
 	if err != nil {
