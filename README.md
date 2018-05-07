@@ -1,17 +1,35 @@
-# golang hacker news api
-A little Golang/HackerNews. I've used dep package to take care about the dependencies and GINKGO FOR TESTS.
+# Hacker News - Golang App
+A little Golang/HackerNews. I've used [golang/dep] package to take care about the dependencies and [GINKGO] for tests.
 
-Building the project
-> git clone https://github.com/jamesmallon/golang-hn.git golang-hn
+[golang/dep]: <https://github.com/golang/dep>
+[GINKGO]: <https://onsi.github.io/ginkgo/>
 
-> dep ensure
+#### Get the project:
+```sh
+$ git clone https://github.com/jamesmallon/golang-hn.git golang-hn
+```
 
-Running Tests
-> ginkgo -v -r 
+#### Updating the dependencies:
+```sh 
+$ dep ensure
+```
 
-Runnning
-> go build -v -o main
+#### Running Tests:
+```sh 
+$ ginkgo -v -r 
+```
 
-> ./main 
+#### Build:
+```sh
+$ go build -v -o main
+```
 
-> ./main -csv="./csv"
+#### Running:
+```sh
+$ ./main 
+```
+
+#### Running to save in a CSV files:
+```sh 
+$ ./main -csv="./csv" 
+```
