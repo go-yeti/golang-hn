@@ -38,11 +38,14 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 	var storiesIds []int
 
 	storiesChn := make(chan storiesChnRtn)
+	defer close(storiesChn)
 
 	wg.Add(1)
 	go func() {
 		r, err := httpClient.Get(url)
 		defer r.Body.Close()
+		defer wg.Done()
+
 		if err != nil {
 			storiesChn <- storiesChnRtn{
 				Result: storiesIds,
@@ -65,10 +68,8 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 			Result: storiesIds[:qtt],
 			Err:    err,
 		}
-		defer wg.Done()
 	}()
 	resp := <-storiesChn
-	defer close(storiesChn)
 	wg.Wait()
 	return resp.Result.([]int), resp.Err
 }
@@ -82,9 +83,14 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 	var story model.Story
 
 	storiesChn := make(chan storiesChnRtn)
+	defer close(storiesChn)
 
+	wg.Add(1)
 	go func() {
 		r, err := httpClient.Get(url)
+		defer r.Body.Close()
+		defer wg.Done()
+
 		if err != nil {
 			storiesChn <- storiesChnRtn{
 				Result: story,
@@ -93,7 +99,6 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 			runtime.Goexit()
 		}
 
-		defer r.Body.Close()
 		response, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			storiesChn <- storiesChnRtn{
@@ -104,44 +109,15 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 		}
 
 		err = json.Unmarshal(response, &story)
-		if err != nil {
-			storiesChn <- storiesChnRtn{
-				Result: story,
-				Err:    err,
-			}
+		storiesChn <- storiesChnRtn{
+			Result: story,
+			Err:    err,
 		}
-		defer wg.Done()
 	}()
 	resp := <-storiesChn
-	defer close(storiesChn)
 	wg.Wait()
 	return resp.Result.(model.Story), resp.Err
 }
-
-// Get a topstory from the specified id
-//func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
-//	vars := sd.envVar.GetVars()
-//	url := utils.StringConcat(vars["baseUrl"], fmt.Sprintf(vars["item"], id))
-//	var story model.Story
-//
-//	r, err := httpClient.Get(url)
-//	if err != nil {
-//		return story, err
-//	}
-//
-//	defer r.Body.Close()
-//	response, err := ioutil.ReadAll(r.Body)
-//	if err != nil {
-//		return story, err
-//	}
-//
-//	err = json.Unmarshal(response, &story)
-//	if err != nil {
-//		return story, err
-//	}
-//
-//	return story, err
-//}
 
 // Get a newstory from the specified id
 func (sd *storyDAO) GetNewStory(id int) {}
