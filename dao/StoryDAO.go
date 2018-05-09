@@ -8,10 +8,18 @@ import (
 	"golang-hn/utils"
 	"io/ioutil"
 	"net/http"
+	"runtime"
+	"sync"
 	"time"
 )
 
 var httpClient = &http.Client{Timeout: 10 * time.Second}
+
+type storiesChnRtn struct {
+	Result interface{}
+	Err    error
+	Info   interface{}
+}
 
 type storyDAO struct {
 	envVar configs.EnvInterface
@@ -23,25 +31,46 @@ func NewStoryDAO(vars configs.EnvInterface) *storyDAO {
 
 // Get the specified quantity of topstories ids
 func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
+	var wg sync.WaitGroup
 	vars := sd.envVar.GetVars()
-	var storiesIds []int
-
 	url := utils.StringConcat(vars["baseUrl"], vars["topStories"])
 
-	r, err := httpClient.Get(url)
-	if err != nil {
-		return storiesIds, err
-	}
-	defer r.Body.Close()
+	var storiesIds []int
 
-	response, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return storiesIds, err
-	}
+	storiesChn := make(chan storiesChnRtn)
 
-	err = json.Unmarshal(response, &storiesIds)
+	wg.Add(1)
+	go func() {
+		r, err := httpClient.Get(url)
+		defer r.Body.Close()
+		if err != nil {
+			storiesChn <- storiesChnRtn{
+				Result: storiesIds,
+				Err:    err,
+			}
+			runtime.Goexit()
+		}
 
-	return storiesIds[:qtt], err
+		response, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			storiesChn <- storiesChnRtn{
+				Result: storiesIds,
+				Err:    err,
+			}
+			runtime.Goexit()
+		}
+
+		err = json.Unmarshal(response, &storiesIds)
+		storiesChn <- storiesChnRtn{
+			Result: storiesIds[:qtt],
+			Err:    err,
+		}
+		defer wg.Done()
+	}()
+	resp := <-storiesChn
+	defer close(storiesChn)
+	wg.Wait()
+	return resp.Result.([]int), resp.Err
 }
 
 // Get a topstory from the specified id
