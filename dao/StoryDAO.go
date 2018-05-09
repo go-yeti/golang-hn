@@ -15,12 +15,6 @@ import (
 
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 
-type storiesChnRtn struct {
-	Result interface{}
-	Err    error
-	Info   interface{}
-}
-
 type storyDAO struct {
 	envVar configs.EnvInterface
 }
@@ -37,7 +31,7 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 
 	var storiesIds []int
 
-	storiesChn := make(chan storiesChnRtn)
+	storiesChn := make(chan model.ChnResult)
 	defer close(storiesChn)
 
 	wg.Add(1)
@@ -47,7 +41,7 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 		defer wg.Done()
 
 		if err != nil {
-			storiesChn <- storiesChnRtn{
+			storiesChn <- model.ChnResult{
 				Result: storiesIds,
 				Err:    err,
 			}
@@ -56,7 +50,7 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 
 		response, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			storiesChn <- storiesChnRtn{
+			storiesChn <- model.ChnResult{
 				Result: storiesIds,
 				Err:    err,
 			}
@@ -64,7 +58,7 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 		}
 
 		err = json.Unmarshal(response, &storiesIds)
-		storiesChn <- storiesChnRtn{
+		storiesChn <- model.ChnResult{
 			Result: storiesIds[:qtt],
 			Err:    err,
 		}
@@ -82,7 +76,7 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 
 	var story model.Story
 
-	storiesChn := make(chan storiesChnRtn)
+	storiesChn := make(chan model.ChnResult)
 	defer close(storiesChn)
 
 	wg.Add(1)
@@ -92,7 +86,7 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 		defer wg.Done()
 
 		if err != nil {
-			storiesChn <- storiesChnRtn{
+			storiesChn <- model.ChnResult{
 				Result: story,
 				Err:    err,
 			}
@@ -101,7 +95,7 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 
 		response, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			storiesChn <- storiesChnRtn{
+			storiesChn <- model.ChnResult{
 				Result: story,
 				Err:    err,
 			}
@@ -109,7 +103,7 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 		}
 
 		err = json.Unmarshal(response, &story)
-		storiesChn <- storiesChnRtn{
+		storiesChn <- model.ChnResult{
 			Result: story,
 			Err:    err,
 		}
