@@ -3,8 +3,9 @@ A little **Golang HackerNews App**. I've used [DEP] package to **Dependency Mana
 
 **SOLID**, **KISS** and **DRY** principles was applied as well as some useful and relevant (to this application) **Design Patterns**, such as **DAO**, **Dependency Injection** and more.
 
-By default the app return 20 top stories top Hacker News, but you can specify the quantity by using the flag **-tpqtt**
-It is possible to save the result to a file, that has its name automatically generated, accordingly with the quantity of topstories and the timestamp, to avoid name conflict and overwritings.
+By default the app return 20 top stories top Hacker News, but you can specify the quantity by using the flag **-tpqtt**.
+
+It is possible to save the result to a .csv file by using the flag **-csv**, which expects the path to save the file. The file name is automatically generated, accordingly with the quantity of topstories and the timestamp, to avoid name conflict and overwritings.
 
 [DEP]: <https://github.com/golang/dep>
 [GINKGO]: <https://onsi.github.io/ginkgo/>
