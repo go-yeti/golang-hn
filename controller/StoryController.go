@@ -51,18 +51,19 @@ func (sc *storyController) TopStories2CSV(qtt int, path string) (string, error) 
 	currTime := time.Now()
 
 	// Create a csv file
-	filePath, err := os.Create(utils.StringConcat(path, fmt.Sprintf("%d", qtt), "_topstories-", currTime.Format("20060102150405"), ".csv"))
+	filePath := utils.StringConcat(path, fmt.Sprintf("%d", qtt), "_topstories-", currTime.Format("20060102150405"), ".csv")
+	osFile, err := os.Create(filePath)
 	if err != nil {
 		return "", err
 	}
-	defer filePath.Close()
+	defer osFile.Close()
 
 	stories, err := sc.GetTopStories(qtt)
 	if err != nil {
 		return "", err
 	}
 
-	w := csv.NewWriter(filePath)
+	w := csv.NewWriter(osFile)
 	for _, story := range stories {
 		var record []string
 		record = append(record, story.By)
@@ -78,5 +79,5 @@ func (sc *storyController) TopStories2CSV(qtt int, path string) (string, error) 
 	}
 	w.Flush()
 
-	return "The file was successfully saved", err
+	return utils.StringConcat("The file was successfully saved as ", filePath), err
 }
