@@ -55,7 +55,7 @@ $ ./main -tpqtt=45
 $ ./main -csv=./csv/ 
 ```
 
-#### Running to save in a CSV files (default quantity of top stories - 20):
+#### Running to save in a CSV files and selecting 45 top stories:
 ```sh 
 $ ./main -csv=./csv/ -tpqtt=45
 ```
