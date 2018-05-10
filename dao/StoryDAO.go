@@ -48,7 +48,7 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 			runtime.Goexit()
 		}
 
-		respIO, err := ioutil.ReadAll(r.Body)
+		respIO, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			storiesChn <- model.ChnResult{
 				Result: storiesIds,
@@ -93,7 +93,7 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 			runtime.Goexit()
 		}
 
-		respIO, err := ioutil.ReadAll(r.Body)
+		respIO, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			storiesChn <- model.ChnResult{
 				Result: story,
