@@ -36,8 +36,8 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 
 	wg.Add(1)
 	go func() {
-		r, err := httpClient.Get(url)
-		defer r.Body.Close()
+		response, err := httpClient.Get(url)
+		defer response.Body.Close()
 		defer wg.Done()
 
 		if err != nil {
@@ -48,7 +48,7 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 			runtime.Goexit()
 		}
 
-		response, err := ioutil.ReadAll(r.Body)
+		respIO, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			storiesChn <- model.ChnResult{
 				Result: storiesIds,
@@ -57,15 +57,15 @@ func (sd *storyDAO) GetTopStoriesIds(qtt int) ([]int, error) {
 			runtime.Goexit()
 		}
 
-		err = json.Unmarshal(response, &storiesIds)
+		err = json.Unmarshal(respIO, &storiesIds)
 		storiesChn <- model.ChnResult{
 			Result: storiesIds[:qtt],
 			Err:    err,
 		}
 	}()
-	resp := <-storiesChn
+	resChn := <-storiesChn
 	wg.Wait()
-	return resp.Result.([]int), resp.Err
+	return resChn.Result.([]int), resChn.Err
 }
 
 // Get a topstory from the specified id
@@ -81,8 +81,8 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 
 	wg.Add(1)
 	go func() {
-		r, err := httpClient.Get(url)
-		defer r.Body.Close()
+		response, err := httpClient.Get(url)
+		defer response.Body.Close()
 		defer wg.Done()
 
 		if err != nil {
@@ -93,7 +93,7 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 			runtime.Goexit()
 		}
 
-		response, err := ioutil.ReadAll(r.Body)
+		respIO, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			storiesChn <- model.ChnResult{
 				Result: story,
@@ -102,15 +102,15 @@ func (sd *storyDAO) GetTopStory(id int) (model.Story, error) {
 			runtime.Goexit()
 		}
 
-		err = json.Unmarshal(response, &story)
+		err = json.Unmarshal(respIO, &story)
 		storiesChn <- model.ChnResult{
 			Result: story,
 			Err:    err,
 		}
 	}()
-	resp := <-storiesChn
+	resChn := <-storiesChn
 	wg.Wait()
-	return resp.Result.(model.Story), resp.Err
+	return resChn.Result.(model.Story), resChn.Err
 }
 
 // Get a newstory from the specified id
